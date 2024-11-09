@@ -1,9 +1,9 @@
 package com.gokul.flashcardproject;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Button;
+import android.widget.ToggleButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +17,7 @@ public class FlashcardViewActivity extends AppCompatActivity {
 
     private TextView flashcardTextView;
     private Button shuffleButton;
+    private ToggleButton knownToggleButton;
     private List<Flashcard> flashcardList;
     private int currentIndex = 0;
     private boolean showingQuestion = true;
@@ -29,13 +30,14 @@ public class FlashcardViewActivity extends AppCompatActivity {
 
         flashcardTextView = findViewById(R.id.flashcardTextView);
         shuffleButton = findViewById(R.id.shuffleButton);
+        knownToggleButton = findViewById(R.id.knownToggleButton);
         db = FirebaseFirestore.getInstance();
 
         fetchFlashcards();
 
         flashcardTextView.setOnClickListener(v -> flipFlashcard());
-
         shuffleButton.setOnClickListener(v -> shuffleFlashcards());
+        knownToggleButton.setOnCheckedChangeListener((buttonView, isChecked) -> markAsKnown(isChecked));
     }
 
     private void fetchFlashcards() {
@@ -55,6 +57,7 @@ public class FlashcardViewActivity extends AppCompatActivity {
         if (flashcardList != null && !flashcardList.isEmpty()) {
             Flashcard flashcard = flashcardList.get(currentIndex);
             flashcardTextView.setText(showingQuestion ? flashcard.getQuestion() : flashcard.getAnswer());
+            knownToggleButton.setChecked(flashcard.isKnown());
         }
     }
 
@@ -69,6 +72,17 @@ public class FlashcardViewActivity extends AppCompatActivity {
             currentIndex = 0;
             showingQuestion = true;
             displayFlashcard();
+        }
+    }
+
+    private void markAsKnown(boolean isKnown) {
+        if (flashcardList != null && !flashcardList.isEmpty()) {
+            Flashcard flashcard = flashcardList.get(currentIndex);
+            flashcard.setKnown(isKnown);
+            db.collection("flashcards").document(flashcard.getId())
+                    .update("known", isKnown)
+                    .addOnSuccessListener(aVoid -> Toast.makeText(this, "Flashcard updated", Toast.LENGTH_SHORT).show())
+                    .addOnFailureListener(e -> Toast.makeText(this, "Error updating flashcard", Toast.LENGTH_SHORT).show());
         }
     }
 }

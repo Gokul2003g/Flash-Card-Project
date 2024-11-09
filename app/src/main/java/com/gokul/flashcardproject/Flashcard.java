@@ -4,6 +4,7 @@ public class Flashcard {
     private String id;
     private String question;
     private String answer;
+    private boolean known;
 
     public Flashcard() {
         // Default constructor required for calls to DataSnapshot.getValue(Flashcard.class)
@@ -37,5 +38,13 @@ public class Flashcard {
 
     public void setAnswer(String answer) {
         this.answer = answer;
+    }
+
+    public boolean isKnown() {
+        return known;
+    }
+
+    public void setKnown(boolean known) {
+        this.known = known;
     }
 }

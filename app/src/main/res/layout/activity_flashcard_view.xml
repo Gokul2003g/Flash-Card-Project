@@ -25,4 +25,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/flashcardTextView"
         android:layout_marginTop="16dp" />
+
+    <ToggleButton
+        android:id="@+id/knownToggleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOff="Mark as Known"
+        android:textOn="Known"
+        app:layout_constraintBottom_toTopOf="@id/shuffleButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="16dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

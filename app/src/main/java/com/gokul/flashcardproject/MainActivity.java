@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -47,23 +48,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fetchFlashcards() {
-        db.collection("flashcards")
-                .addSnapshotListener((queryDocumentSnapshots, e) -> {
-                    if (e != null) {
-                        return;
+        db.collection("flashcards").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                flashcardList.clear(); // Clear the list before adding new items
+                for (DocumentSnapshot document : task.getResult().getDocuments()) {
+                    Flashcard flashcard = document.toObject(Flashcard.class);
+                    if (flashcard != null) {
+                        flashcard.setId(document.getId());
+                        flashcardList.add(flashcard);
                     }
+                }
+                adapter.notifyDataSetChanged(); // Notify adapter of data changes
+            } else {
+                Toast.makeText(this, "Error fetching flashcards", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
-                    flashcardList.clear();
-                    if (queryDocumentSnapshots != null) {
-                        for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
-                            Flashcard flashcard = document.toObject(Flashcard.class);
-                            if (flashcard != null) {
-                                flashcard.setId(document.getId());
-                                flashcardList.add(flashcard);
-                            }
-                        }
-                    }
-                    adapter.notifyDataSetChanged();
-                });
+    private void displayFlashcard() {
+        adapter.notifyDataSetChanged();
     }
 }
