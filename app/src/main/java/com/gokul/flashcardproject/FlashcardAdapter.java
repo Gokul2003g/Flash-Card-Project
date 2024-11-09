@@ -29,6 +29,7 @@ public class FlashcardAdapter extends RecyclerView.Adapter<FlashcardAdapter.Flas
     public void onBindViewHolder(@NonNull FlashcardViewHolder holder, int position) {
         Flashcard flashcard = flashcardList.get(position);
         holder.questionTextView.setText(flashcard.getQuestion());
+        holder.answerTextView.setText(flashcard.getAnswer());
     }
 
     @Override
@@ -38,10 +39,12 @@ public class FlashcardAdapter extends RecyclerView.Adapter<FlashcardAdapter.Flas
 
     static class FlashcardViewHolder extends RecyclerView.ViewHolder {
         TextView questionTextView;
+        TextView answerTextView;
 
         public FlashcardViewHolder(@NonNull View itemView) {
             super(itemView);
             questionTextView = itemView.findViewById(R.id.question);
+            answerTextView = itemView.findViewById(R.id.answer);
         }
     }
 }
