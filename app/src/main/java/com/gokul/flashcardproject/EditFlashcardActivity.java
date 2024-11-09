@@ -20,6 +20,7 @@ public class EditFlashcardActivity extends AppCompatActivity {
     private Button saveButton;
     private FirebaseFirestore db;
     private String flashcardId;
+    private boolean known;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,7 @@ public class EditFlashcardActivity extends AppCompatActivity {
             if (flashcard != null) {
                 questionEditText.setText(flashcard.getQuestion());
                 answerEditText.setText(flashcard.getAnswer());
+                known = flashcard.isKnown(); // Preserve the known value
             }
         });
 
@@ -61,6 +63,7 @@ public class EditFlashcardActivity extends AppCompatActivity {
         Map<String, Object> flashcard = new HashMap<>();
         flashcard.put("question", question);
         flashcard.put("answer", answer);
+        flashcard.put("known", known); // Preserve the known value
 
         db.collection("flashcards").document(flashcardId)
                 .set(flashcard)

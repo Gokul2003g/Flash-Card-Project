@@ -8,8 +8,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,6 +35,8 @@ public class FlashcardViewActivity extends AppCompatActivity {
         knownToggleButton = findViewById(R.id.knownToggleButton);
         db = FirebaseFirestore.getInstance();
 
+        flashcardList = new ArrayList<>(); // Initialize flashcardList
+
         fetchFlashcards();
 
         flashcardTextView.setOnClickListener(v -> flipFlashcard());
@@ -43,10 +47,18 @@ public class FlashcardViewActivity extends AppCompatActivity {
     private void fetchFlashcards() {
         db.collection("flashcards").get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult() != null) {
-                flashcardList = task.getResult().toObjects(Flashcard.class);
-                if (!flashcardList.isEmpty()) {
-                    displayFlashcard();
+                flashcardList.clear(); // Clear the list before adding new items
+                for (DocumentSnapshot document : task.getResult().getDocuments()) {
+                    Flashcard flashcard = document.toObject(Flashcard.class);
+                    if (flashcard != null) {
+                        flashcard.setId(document.getId());
+                        if (!document.contains("known")) {
+                            flashcard.setKnown(false); // Default value if 'known' field is missing
+                        }
+                        flashcardList.add(flashcard);
+                    }
                 }
+                displayFlashcard(); // Display the first flashcard
             } else {
                 Toast.makeText(this, "Error fetching flashcards", Toast.LENGTH_SHORT).show();
             }

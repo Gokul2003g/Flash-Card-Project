@@ -10,9 +10,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class AddFlashcardActivity extends AppCompatActivity {
 
     private EditText questionEditText;
@@ -30,35 +27,28 @@ public class AddFlashcardActivity extends AppCompatActivity {
         saveButton = findViewById(R.id.saveButton);
         db = FirebaseFirestore.getInstance();
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveFlashcard();
-            }
-        });
+        saveButton.setOnClickListener(v -> addFlashcard());
     }
 
-    private void saveFlashcard() {
-        String question = questionEditText.getText().toString();
-        String answer = answerEditText.getText().toString();
+    private void addFlashcard() {
+        String question = questionEditText.getText().toString().trim();
+        String answer = answerEditText.getText().toString().trim();
 
         if (question.isEmpty() || answer.isEmpty()) {
-            Toast.makeText(this, "Please fill out both fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please enter both question and answer", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Map<String, Object> flashcard = new HashMap<>();
-        flashcard.put("question", question);
-        flashcard.put("answer", answer);
+        Flashcard flashcard = new Flashcard();
+        flashcard.setQuestion(question);
+        flashcard.setAnswer(answer);
+        flashcard.setKnown(false); // Set known to false by default
 
-        db.collection("flashcards")
-                .add(flashcard)
+        db.collection("flashcards").add(flashcard)
                 .addOnSuccessListener(documentReference -> {
-                    Toast.makeText(this, "Flashcard saved", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Flashcard added", Toast.LENGTH_SHORT).show();
                     finish();
                 })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error saving flashcard", Toast.LENGTH_SHORT).show();
-                });
+                .addOnFailureListener(e -> Toast.makeText(this, "Error adding flashcard", Toast.LENGTH_SHORT).show());
     }
 }
