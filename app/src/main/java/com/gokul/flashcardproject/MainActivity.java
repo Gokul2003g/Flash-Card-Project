@@ -62,7 +62,10 @@ public class MainActivity extends AppCompatActivity {
                         flashcardList.clear();
                         for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
                             Flashcard flashcard = document.toObject(Flashcard.class);
-                            flashcardList.add(flashcard);
+                            if (flashcard != null) {
+                                flashcard.setId(document.getId());
+                                flashcardList.add(flashcard);
+                            }
                         }
                         adapter.notifyDataSetChanged();
                     }

@@ -7,9 +7,9 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/amrita_logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/amrita_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.FlashCardProject"
         tools:targetApi="31">
@@ -28,6 +28,7 @@
             android:exported="true">
         </activity>
         <activity android:name=".AddFlashcardActivity" />
+        <activity android:name=".EditFlashcardActivity" />
     </application>
 
 </manifest>
