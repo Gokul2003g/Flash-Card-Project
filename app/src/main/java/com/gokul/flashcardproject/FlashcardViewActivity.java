@@ -1,12 +1,14 @@
 package com.gokul.flashcardproject;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Button;
 import android.widget.ToggleButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -24,6 +26,7 @@ public class FlashcardViewActivity extends AppCompatActivity {
     private int currentIndex = 0;
     private boolean showingQuestion = true;
     private FirebaseFirestore db;
+    private CardView flashcardCardView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,13 +36,14 @@ public class FlashcardViewActivity extends AppCompatActivity {
         flashcardTextView = findViewById(R.id.flashcardTextView);
         shuffleButton = findViewById(R.id.shuffleButton);
         knownToggleButton = findViewById(R.id.knownToggleButton);
+        flashcardCardView = findViewById(R.id.flashcardCardView);
         db = FirebaseFirestore.getInstance();
 
         flashcardList = new ArrayList<>(); // Initialize flashcardList
 
         fetchFlashcards();
 
-        flashcardTextView.setOnClickListener(v -> flipFlashcard());
+        flashcardCardView.setOnClickListener(v -> flipFlashcard());
         shuffleButton.setOnClickListener(v -> shuffleFlashcards());
         knownToggleButton.setOnCheckedChangeListener((buttonView, isChecked) -> markAsKnown(isChecked));
     }
@@ -68,14 +72,31 @@ public class FlashcardViewActivity extends AppCompatActivity {
     private void displayFlashcard() {
         if (flashcardList != null && !flashcardList.isEmpty()) {
             Flashcard flashcard = flashcardList.get(currentIndex);
-            flashcardTextView.setText(showingQuestion ? flashcard.getQuestion() : flashcard.getAnswer());
+            if (showingQuestion) {
+                flashcardTextView.setText(flashcard.getQuestion());
+                flashcardTextView.setTextColor(getResources().getColor(android.R.color.white)); // Set question text color to black
+            } else {
+                flashcardTextView.setText(flashcard.getAnswer());
+                flashcardTextView.setTextColor(getResources().getColor(android.R.color.holo_green_dark)); // Set answer text color to green
+            }
             knownToggleButton.setChecked(flashcard.isKnown());
         }
     }
 
     private void flipFlashcard() {
-        showingQuestion = !showingQuestion;
-        displayFlashcard();
+        flashcardCardView.animate()
+                .rotationY(90)
+                .setDuration(150)
+                .withEndAction(() -> {
+                    showingQuestion = !showingQuestion;
+                    displayFlashcard();
+                    flashcardCardView.setRotationY(-90);
+                    flashcardCardView.animate()
+                            .rotationY(0)
+                            .setDuration(150)
+                            .start();
+                })
+                .start();
     }
 
     private void shuffleFlashcards() {
