@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "183073216145",
+    "project_id": "flashlearn-f1333",
+    "storage_bucket": "flashlearn-f1333.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:183073216145:android:44b79e59e233826158d130",
+        "android_client_info": {
+          "package_name": "com.gokul.flashcardproject"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3uzF88oMfXoOeZ_h_SYEdaCJ3SYKg1Z4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
