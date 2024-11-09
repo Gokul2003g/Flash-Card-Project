@@ -1,7 +1,6 @@
 package com.gokul.flashcardproject;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Button;
 import android.widget.ToggleButton;
@@ -20,7 +19,6 @@ import java.util.List;
 public class FlashcardViewActivity extends AppCompatActivity {
 
     private TextView flashcardTextView;
-    private Button shuffleButton;
     private ToggleButton knownToggleButton;
     private List<Flashcard> flashcardList;
     private int currentIndex = 0;
@@ -34,7 +32,7 @@ public class FlashcardViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_flashcard_view);
 
         flashcardTextView = findViewById(R.id.flashcardTextView);
-        shuffleButton = findViewById(R.id.shuffleButton);
+        Button shuffleButton = findViewById(R.id.shuffleButton);
         knownToggleButton = findViewById(R.id.knownToggleButton);
         flashcardCardView = findViewById(R.id.flashcardCardView);
         db = FirebaseFirestore.getInstance();
