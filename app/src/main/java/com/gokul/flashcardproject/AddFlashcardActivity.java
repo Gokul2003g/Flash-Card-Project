@@ -1,7 +1,6 @@
 package com.gokul.flashcardproject;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -47,6 +46,7 @@ public class AddFlashcardActivity extends AppCompatActivity {
         db.collection("flashcards").add(flashcard)
                 .addOnSuccessListener(documentReference -> {
                     Toast.makeText(this, "Flashcard added", Toast.LENGTH_SHORT).show();
+                    setResult(RESULT_OK); // Set result to OK
                     finish();
                 })
                 .addOnFailureListener(e -> Toast.makeText(this, "Error adding flashcard", Toast.LENGTH_SHORT).show());

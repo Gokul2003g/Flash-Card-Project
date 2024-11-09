@@ -2,10 +2,10 @@ package com.gokul.flashcardproject;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +19,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int ADD_FLASHCARD_REQUEST = 1;
     private RecyclerView recyclerView;
     private FlashcardAdapter adapter;
     private List<Flashcard> flashcardList;
@@ -42,9 +43,17 @@ public class MainActivity extends AppCompatActivity {
 
         fetchFlashcards();
 
-        fab.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, AddFlashcardActivity.class)));
+        fab.setOnClickListener(v -> startActivityForResult(new Intent(MainActivity.this, AddFlashcardActivity.class), ADD_FLASHCARD_REQUEST));
 
         viewFlashcardsButton.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, FlashcardViewActivity.class)));
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ADD_FLASHCARD_REQUEST && resultCode == RESULT_OK) {
+            fetchFlashcards(); // Refresh the flashcards list
+        }
     }
 
     private void fetchFlashcards() {
@@ -55,6 +64,9 @@ public class MainActivity extends AppCompatActivity {
                     Flashcard flashcard = document.toObject(Flashcard.class);
                     if (flashcard != null) {
                         flashcard.setId(document.getId());
+                        if (!document.contains("known")) {
+                            flashcard.setKnown(false); // Default value if 'known' field is missing
+                        }
                         flashcardList.add(flashcard);
                     }
                 }
@@ -63,9 +75,5 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Error fetching flashcards", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private void displayFlashcard() {
-        adapter.notifyDataSetChanged();
     }
 }
